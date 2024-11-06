@@ -1,0 +1,20 @@
+# Ignore all files in node_modules
+node_modules/
+
+# Ignore build output directories
+dist/
+build/
+
+# Ignore specific file types
+*.min.js
+*.map
+
+# Ignore specific files or folders
+.git/
+*.env
+.env.*
+.env
+
+
+*.md
+*.mdx
