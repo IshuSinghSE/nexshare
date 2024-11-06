@@ -6,7 +6,6 @@ import { useDropzone } from 'react-dropzone';
 import { Progress } from '@nextui-org/progress';
 import { Button } from '@nextui-org/button';
 import { CancelIcon, PauseIcon } from '@/components/icons';
-// import { FaTrash, FaStop } from 'react-icons/fa';
 
 export default function UploadPage() {
     const [isDragging, setIsDragging] = useState(false);
@@ -147,7 +146,9 @@ export default function UploadPage() {
                                             isIconOnly
                                             variant="flat"
                                             color="warning"
-                                            onClick={() => handleStopUpload(index)}
+                                            onClick={() =>
+                                                handleStopUpload(index)
+                                            }
                                         >
                                             <PauseIcon />
                                         </Button>

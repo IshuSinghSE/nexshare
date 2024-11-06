@@ -7,7 +7,6 @@ import {
     NavbarItem,
     NavbarMenuItem,
 } from '@nextui-org/navbar';
-import { Button } from '@nextui-org/button';
 import { Kbd } from '@nextui-org/kbd';
 import { Link } from '@nextui-org/link';
 import { Input } from '@nextui-org/input';
@@ -21,7 +20,6 @@ import {
     TwitterIcon,
     GithubIcon,
     DiscordIcon,
-    HeartFilledIcon,
     SearchIcon,
     Logo,
 } from '@/components/icons';
@@ -59,7 +57,7 @@ export const Navbar = () => {
                     >
                         <Logo />
                         <p
-                            className={`${title({ color: 'blue', size:'xs' })} font-bold text-7xl bg-gradient-to-b from-blue-500 to-sky-500 bg-clip-text text-transparent`}
+                            className={`${title({ color: 'blue', size: 'xs' })} font-bold text-7xl bg-gradient-to-b from-blue-500 to-sky-500 bg-clip-text text-transparent`}
                         >
                             NEXSHARE
                         </p>

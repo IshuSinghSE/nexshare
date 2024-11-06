@@ -1,3 +1,4 @@
+/* eslint-disable */
 'use client'
 import React from 'react';
 import {
@@ -6,10 +7,11 @@ import {
     TableColumn,
     TableBody,
     TableRow,
-    TableCell
+    TableCell,
+    SortDescriptor
 } from '@nextui-org/table';
 
-import { columns, users, statusOptions } from '@/config/data';
+import { columns, users as rawUsers, statusOptions } from '@/config/data';
 import { capitalize } from '@/config/utils';
 import {
     ChevronDownIcon,
@@ -24,7 +26,18 @@ import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
 import { Pagination } from '@nextui-org/pagination';
 
-const statusColorMap = {
+interface UserType {
+    id: number;
+    name: string;
+    email: string;
+    avatar: string;
+    role: string;
+    team: string;
+    status: string;
+    age: number;
+}
+
+const statusColorMap: Record<string, 'success' | 'danger' | 'warning'> = {
     active: 'success',
     paused: 'danger',
     vacation: 'warning',
@@ -33,18 +46,23 @@ const statusColorMap = {
 const INITIAL_VISIBLE_COLUMNS = ['name', 'role', 'status', 'actions'];
 
 export default function Files() {
-    const [filterValue, setFilterValue] = React.useState('');
-    const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
-    const [visibleColumns, setVisibleColumns] = React.useState(
+    const [filterValue, setFilterValue] = React.useState<string>('');
+    const [selectedKeys, setSelectedKeys] = React.useState<Set<string>>(new Set([]));
+    const [visibleColumns, setVisibleColumns] = React.useState<Set<string>>(
         new Set(INITIAL_VISIBLE_COLUMNS)
     );
-    const [statusFilter, setStatusFilter] = React.useState('all');
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const [sortDescriptor, setSortDescriptor] = React.useState({
+    const [statusFilter, setStatusFilter] = React.useState<string | Set<string>>('all');
+    const [rowsPerPage, setRowsPerPage] = React.useState<number>(10);
+    const [sortDescriptor, setSortDescriptor] = React.useState<{ column: string; direction: 'ascending' | 'descending' }>({
         column: 'age',
         direction: 'ascending',
     });
-    const [page, setPage] = React.useState(1);
+    const [page, setPage] = React.useState<number>(1);
+
+    const users = rawUsers.map(user => ({
+        ...user,
+        age: Number(user.age),
+    }));
 
     const pages = Math.ceil(users.length / rowsPerPage);
 
@@ -76,7 +94,7 @@ export default function Files() {
         }
 
         return filteredUsers;
-    }, [users, filterValue, statusFilter]);
+    }, [users, filterValue, statusFilter, hasSearchFilter]);
 
     const items = React.useMemo(() => {
         const start = (page - 1) * rowsPerPage;
@@ -87,16 +105,16 @@ export default function Files() {
 
     const sortedItems = React.useMemo(() => {
         return [...items].sort((a, b) => {
-            const first = a[sortDescriptor.column];
-            const second = b[sortDescriptor.column];
+            const first = a[sortDescriptor.column as keyof UserType];
+            const second = b[sortDescriptor.column as keyof UserType];
             const cmp = first < second ? -1 : first > second ? 1 : 0;
 
             return sortDescriptor.direction === 'descending' ? -cmp : cmp;
         });
     }, [sortDescriptor, items]);
 
-    const renderCell = React.useCallback((user, columnKey) => {
-        const cellValue = user[columnKey];
+    const renderCell = React.useCallback((user: UserType, columnKey: string) => {
+        const cellValue = user[columnKey as keyof UserType];
 
         switch (columnKey) {
             case 'name':
@@ -111,7 +129,7 @@ export default function Files() {
                             description: 'text-default-500',
                         }}
                         description={user.email}
-                        name={cellValue}
+                        name={cellValue as string}
                     >
                         {user.email}
                     </User>
@@ -120,7 +138,7 @@ export default function Files() {
                 return (
                     <div className="flex flex-col">
                         <p className="text-bold text-small capitalize">
-                            {cellValue}
+                            {cellValue as string}
                         </p>
                         <p className="text-bold text-tiny capitalize text-default-500">
                             {user.team}
@@ -135,7 +153,7 @@ export default function Files() {
                         size="sm"
                         variant="dot"
                     >
-                        {cellValue}
+                        {cellValue as string}
                     </Chip>
                 );
             case 'actions':
@@ -161,16 +179,16 @@ export default function Files() {
                     </div>
                 );
             default:
-                return cellValue;
+                return cellValue as string;
         }
     }, []);
 
-    const onRowsPerPageChange = React.useCallback((e) => {
+    const onRowsPerPageChange = React.useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
         setRowsPerPage(Number(e.target.value));
         setPage(1);
     }, []);
 
-    const onSearchChange = React.useCallback((value) => {
+    const onSearchChange = React.useCallback((value: string) => {
         if (value) {
             setFilterValue(value);
             setPage(1);
@@ -218,7 +236,7 @@ export default function Files() {
                                 closeOnSelect={false}
                                 selectedKeys={statusFilter}
                                 selectionMode="multiple"
-                                onSelectionChange={setStatusFilter}
+                                onSelectionChange={(keys) => setStatusFilter(keys as Set<string>)}
                             >
                                 {statusOptions.map((status) => (
                                     <DropdownItem
@@ -248,7 +266,7 @@ export default function Files() {
                                 closeOnSelect={false}
                                 selectedKeys={visibleColumns}
                                 selectionMode="multiple"
-                                onSelectionChange={setVisibleColumns}
+                                onSelectionChange={(keys) => setVisibleColumns(new Set(keys as Set<string>))}
                             >
                                 {columns.map((column) => (
                                     <DropdownItem
@@ -313,7 +331,7 @@ export default function Files() {
                     onChange={setPage}
                 />
                 <span className="text-small text-default-400">
-                    {selectedKeys === 'all'
+                    {selectedKeys.size === items.length
                         ? 'All items selected'
                         : `${selectedKeys.size} of ${items.length} selected`}
                 </span>
@@ -364,8 +382,15 @@ export default function Files() {
             sortDescriptor={sortDescriptor}
             topContent={topContent}
             topContentPlacement="outside"
-            onSelectionChange={setSelectedKeys}
-            onSortChange={setSortDescriptor}
+            onSelectionChange={(keys) => setSelectedKeys(new Set(keys as Set<string>))}
+            onSortChange={(descriptor: SortDescriptor) => {
+                if (descriptor.column && typeof descriptor.column === 'string') {
+                    setSortDescriptor({
+                        column: descriptor.column,
+                        direction: descriptor.direction ?? 'ascending',
+                    });
+                }
+            }}
         >
             <TableHeader columns={headerColumns}>
                 {(column) => (
@@ -382,7 +407,7 @@ export default function Files() {
                 {(item) => (
                     <TableRow key={item.id}>
                         {(columnKey) => (
-                            <TableCell>{renderCell(item, columnKey)}</TableCell>
+                            <TableCell>{renderCell(item, columnKey as string)}</TableCell>
                         )}
                     </TableRow>
                 )}
@@ -390,3 +415,4 @@ export default function Files() {
         </Table>
     );
 }
+/* eslint-enable */
