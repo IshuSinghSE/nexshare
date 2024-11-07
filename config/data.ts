@@ -1,18 +1,18 @@
 const columns = [
-    { name: 'ID', uid: 'id', sortable: true },
-    { name: 'NAME', uid: 'name', sortable: true },
-    { name: 'AGE', uid: 'age', sortable: true },
-    { name: 'ROLE', uid: 'role', sortable: true },
-    { name: 'TEAM', uid: 'team' },
-    { name: 'EMAIL', uid: 'email' },
-    { name: 'STATUS', uid: 'status', sortable: true },
+    // { name: 'ID', uid: 'id', sortable: true },
+    { name: 'FILENAME', uid: 'name', sortable: true },
+    { name: 'SIZE', uid: 'size', sortable: true },
+    { name: 'FILETYPE', uid: 'filetype', sortable: true },
+    { name: 'CREATED', uid: 'created' },
+    // { name: 'MODIFIED', uid: 'modified' },
+    // { name: 'STATUS', uid: 'status', sortable: true },
     { name: 'ACTIONS', uid: 'actions' },
 ];
 
 const statusOptions = [
     { name: 'Active', uid: 'active' },
     { name: 'Paused', uid: 'paused' },
-    { name: 'Vacation', uid: 'vacation' },
+    { name: 'Restricted', uid: 'restricted' },
 ];
 
 const users = [
@@ -22,7 +22,7 @@ const users = [
         role: 'CEO',
         team: 'Management',
         status: 'active',
-        age: '29',
+        size: '29',
         avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026024d',
         email: 'tony.reichert@example.com',
     },

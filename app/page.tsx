@@ -5,38 +5,43 @@ import { title, subtitle } from '@/components/primitives';
 
 export default function Home() {
     return (
-        <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-            <div className="inline-block max-w-xl text-center justify-center">
-                <span className={title()}>Make&nbsp;</span>
-                <span className={title({ color: 'violet' })}>
-                    beautiful&nbsp;
+        <section className="h-5/6 flex flex-col items-center justify-center gap-8 md:pb-10">
+            <div className="inline-block max-w-xl text-center justify-center leading-8">
+                <span className={title({ size: 'lg' })}>Upload,&nbsp;</span>
+                <span className={title({ size: 'lg', color: 'blue' })}>
+                    Save&nbsp;
                 </span>
+                <span className={title({ size: 'lg' })}>and&nbsp;</span>
                 <br />
-                <span className={title()}>
-                    websites regardless of your design experience.
+                <span className={title({ size: 'lg', color: 'blue' })}>
+                    Share&nbsp;
+                </span>
+                <span className={title({ size: 'lg' })}>
+                    your files in one place
                 </span>
                 <div className={subtitle({ class: 'mt-4' })}>
-                    Beautiful, fast and modern React UI library.
+                    Drag and drop your file directly on our cloud and share it
+                    with your friends
                 </div>
             </div>
 
             <div className="flex gap-3">
                 <Link
-                    isExternal
                     className={buttonStyles({
                         color: 'primary',
                         radius: 'full',
                         variant: 'shadow',
+                        size: 'lg',
                     })}
-                    href={siteConfig.links.docs}
+                    href="/sign-in"
                 >
                     Get Started
                 </Link>
                 <Link
-                    isExternal
                     className={buttonStyles({
                         variant: 'bordered',
                         radius: 'full',
+                        size: 'lg',
                     })}
                     href={siteConfig.links.github}
                 >

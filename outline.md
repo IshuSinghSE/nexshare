@@ -46,21 +46,21 @@ Build a simple file-sharing app where users can upload, view, and delete files.
 
 ## Detailed Steps
 
-### Step 1: Set Up Firebase Project
+### Step 1: Set Up Firebase Project ♥
 - Create a Firebase project.
 - Set up Firebase Storage, Firestore, and Authentication.
 
-### Step 2: Frontend Development
+### Step 2: Frontend Development ♥
 - Create a React/Next.js project.
 - Implement components for file upload, viewing, and deletion.
 - Connect the frontend to Firebase services.
 
-### Step 3: Backend Integration
+### Step 3: Backend Integration ♥
 - Configure Firebase Storage for file uploads.
 - Implement Firestore to store file metadata.
 - Set up Firebase Authentication for user login.
 
-### Step 4: Authentication
+### Step 4: Authentication ♥
 - Implement user sign-up, login, and logout functionalities using Firebase Authentication.
 - Manage user sessions and restrict access to authenticated users.
 

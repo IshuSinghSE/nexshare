@@ -6,42 +6,56 @@ export const siteConfig = {
         'Make beautiful websites regardless of your design experience.',
     navItems: [
         {
-            label: 'Upload',
-            href: '/upload',
+            label: 'Dashboard',
+            href: '/dashboard',
+            protected: true,
         },
         {
-            label: 'Files',
-            href: '/files',
+            label: 'Upload',
+            href: '/upload',
+            protected: true,
+        },
+        {
+            label: 'Preview',
+            href: '/preview',
+            protected: true,
         },
         {
             label: 'Contact',
             href: '/contact',
+            protected: false,
         },
         {
             label: 'About',
             href: '/about',
+            protected: false,
         },
     ],
     navMenuItems: [
         {
-            label: 'My Files',
-            href: '/files',
+            label: 'Dashboard',
+            href: '/dashboard',
+            protected: true,
         },
         {
-            label: 'Profile',
-            href: '/profile',
+            label: 'Upload File',
+            href: '/upload',
+            protected: true,
         },
         {
             label: 'Settings',
             href: '/settings',
+            protected: true,
         },
         {
             label: 'Help',
             href: '/help',
+            protected: false,
         },
         {
             label: 'Logout',
             href: '/logout',
+            protected: true,
         },
     ],
     links: {
