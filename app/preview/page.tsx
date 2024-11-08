@@ -1,6 +1,6 @@
 'use client';
 import { title } from '@/components/primitives';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardHeader, CardBody } from '@nextui-org/card';
 import { Image } from '@nextui-org/image';
@@ -15,6 +15,11 @@ const PreviewPage = () => {
     const searchParams = useSearchParams();
     const fileId = searchParams.get('fileId');
     const [fileDetails, setFileDetails] = useState<FileDetailType | null>(null);
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     useEffect(() => {
         if (fileId) {
@@ -35,19 +40,23 @@ const PreviewPage = () => {
     }
 
     const handleDownload = () => {
-        fetch(fileDetails.path, { mode: 'no-cors' })
-            .then((response) => response.blob())
-            .then((blob) => {
-                const url = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = fileDetails.name;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                window.URL.revokeObjectURL(url);
-            })
-            .catch((error) => console.error('Error downloading file:', error));
+        if (isClient) {
+            fetch(fileDetails.path, { mode: 'no-cors' })
+                .then((response) => response.blob())
+                .then((blob) => {
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = fileDetails.name;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch((error) =>
+                    console.error('Error downloading file:', error)
+                );
+        }
     };
 
     return (
@@ -85,6 +94,7 @@ const PreviewPage = () => {
                                 color="primary"
                                 variant="shadow"
                                 onClick={() =>
+                                    isClient &&
                                     window.open(fileDetails.path, '_blank')
                                 }
                             >
@@ -105,4 +115,10 @@ const PreviewPage = () => {
     );
 };
 
-export default PreviewPage;
+const PreviewPageWrapper = () => (
+    <Suspense fallback={<div>Loading...</div>}>
+        <PreviewPage />
+    </Suspense>
+);
+
+export default PreviewPageWrapper;

@@ -51,17 +51,38 @@ export default function RootLayout({
                             {children}
                         </main>
                         <footer className="w-full flex items-center justify-center py-3">
-                            <Link
-                                isExternal
-                                className="flex items-center gap-1 text-current"
-                                href="https://nextui-docs-v2.vercel.app?utm_source=next-app-template"
-                                title="nextui.org homepage"
-                            >
+                            <div className="flex items-center gap-1 text-current">
                                 <span className="text-default-600">
-                                    Powered by
+                                    Created with
                                 </span>
-                                <p className="text-primary">NextUI</p>
-                            </Link>
+                                <Link
+                                    isExternal
+                                    href="https://nextui.org"
+                                    title="NextUI"
+                                >
+                                    <p className="text-primary">NextUI</p>
+                                </Link>
+                                <p>&</p>
+                                <Link
+                                    isExternal
+                                    href="https://firebase.google.com"
+                                    title="Firebase"
+                                >
+                                    <p className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-red-500">
+                                        FireBase
+                                    </p>
+                                </Link>
+                                <span className="text-default-600">by</span>
+                                <Link
+                                    isExternal
+                                    href="https://github.com/IshuSinghSE"
+                                    title="IshuSInghSE"
+                                >
+                                    <p className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">
+                                        Ishu
+                                    </p>
+                                </Link>
+                            </div>
                         </footer>
                     </div>
                 </Providers>

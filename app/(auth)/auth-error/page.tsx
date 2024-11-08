@@ -1,6 +1,6 @@
 'use client';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState, Suspense } from 'react';
 import { Button } from '@nextui-org/button';
 import { Link } from '@nextui-org/link';
 import {
@@ -11,12 +11,25 @@ import {
 } from 'firebase/auth';
 import { toast } from 'react-toastify';
 
-const AuthError = () => {
+const AuthErrorContent = () => {
     const router = useRouter();
-    const { email, methods, provider, pendingCred } = router.query;
+    const searchParams = useSearchParams();
+    const [email, setEmail] = useState<string | null>(null);
+    const [methods, setMethods] = useState<string | null>(null);
+    const [provider, setProvider] = useState<string | null>(null);
+    const [pendingCred, setPendingCred] = useState<string | null>(null);
     const [signInMethods, setSignInMethods] = useState<string[]>([]);
     const [password, setPassword] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            setEmail(searchParams.get('email'));
+            setMethods(searchParams.get('methods'));
+            setProvider(searchParams.get('provider'));
+            setPendingCred(searchParams.get('pendingCred'));
+        }
+    }, [searchParams]);
 
     useEffect(() => {
         if (methods) {
@@ -50,6 +63,10 @@ const AuthError = () => {
             setIsLoading(false);
         }
     };
+
+    if (typeof window === 'undefined') {
+        return null; // Return null during server-side rendering
+    }
 
     return (
         <section className="flex justify-center items-center px-4 sm:px-6 lg:px-8">
@@ -97,6 +114,14 @@ const AuthError = () => {
                 </div>
             </div>
         </section>
+    );
+};
+
+const AuthError = () => {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <AuthErrorContent />
+        </Suspense>
     );
 };
 
