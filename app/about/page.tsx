@@ -11,7 +11,7 @@ export default function AboutPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <h1 className={title()}>About</h1>
+            <h1 className={title({ color: 'blue' })}>About</h1>
             <motion.p
                 className="mb-5 leading-relaxed mt-4"
                 initial={{ y: 50, opacity: 0 }}

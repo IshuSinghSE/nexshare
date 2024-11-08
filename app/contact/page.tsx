@@ -11,7 +11,7 @@ export default function ContactPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <h1 className={title()}>Contact Us</h1>
+            <h1 className={title({ color: 'blue' })}>Contact Us</h1>
             <motion.form
                 className="flex flex-col"
                 initial={{ y: 50, opacity: 0 }}
