@@ -47,11 +47,11 @@ export default function RootLayout({
                 >
                     <div className="relative flex flex-col h-screen">
                         <Navbar />
-                        <main className="container mx-auto max-w-7xl pt-8 px-6 flex-grow">
+                        <main className="container mx-auto max-w-7xl pt-8 px-6 flex-grow antialiased">
                             {children}
                         </main>
                         <footer className="w-full flex items-center justify-center py-3">
-                            <div className="flex items-center gap-1 text-current">
+                            <div className="flex items-center gap-1 text-current antialiased">
                                 <span className="text-default-600">
                                     Created with
                                 </span>
@@ -60,7 +60,9 @@ export default function RootLayout({
                                     href="https://nextui.org"
                                     title="NextUI"
                                 >
-                                    <p className="text-primary">NextUI</p>
+                                    <p className="text-primary font-semibold">
+                                        NextUI
+                                    </p>
                                 </Link>
                                 <p>&</p>
                                 <Link
@@ -68,11 +70,11 @@ export default function RootLayout({
                                     href="https://firebase.google.com"
                                     title="Firebase"
                                 >
-                                    <p className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-red-500">
+                                    <p className="text-gradient  font-semibold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-red-500">
                                         FireBase
                                     </p>
                                 </Link>
-                                <span className="text-default-600">by</span>
+                                {/* <span className="text-default-600">by</span>
                                 <Link
                                     isExternal
                                     href="https://github.com/IshuSinghSE"
@@ -81,7 +83,7 @@ export default function RootLayout({
                                     <p className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">
                                         Ishu
                                     </p>
-                                </Link>
+                                </Link> */}
                             </div>
                         </footer>
                     </div>

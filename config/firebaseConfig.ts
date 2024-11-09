@@ -39,14 +39,15 @@ export function formatFileSize(size: number): string {
     return (size / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
 }
 
+// ...existing code...
 export function formatDate(dateString: string): string {
     const date = new Date(dateString);
     const now = new Date();
     const diffTime = Math.abs(now.getTime() - date.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); // Use floor instead of ceil
 
     if (diffDays === 0) {
-        return 'Today';
+        return `Today at ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
     } else if (diffDays === 1) {
         return 'Yesterday';
     } else if (diffDays < 7) {
@@ -62,6 +63,7 @@ export function formatDate(dateString: string): string {
         return `${years} year${years > 1 ? 's' : ''} ago`;
     }
 }
+// ...existing code...
 
 export function formatFileType(type: string): string {
     if (type.includes('svg+xml')) {
@@ -93,7 +95,7 @@ export function uploadFiles(
         },
         () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                toast.success('File uploaded successfully!');
+                toast.success(`File ${file.name} uploaded successfully!`);
                 onComplete(downloadURL);
             });
         }

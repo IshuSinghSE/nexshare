@@ -42,7 +42,7 @@ import {
 } from '@/config/firebaseConfig';
 import { useUser } from '@/context/UserContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import { FileModal, DeleteModal } from '../components/FileModal';
+import { FileModal, DeleteModal, DetailsModal } from '../components/FileModal';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
@@ -99,12 +99,15 @@ const DashboardPage = () => {
     });
     const [page, setPage] = React.useState<number>(1);
     const [files, setFiles] = React.useState<FileType[]>([]);
+    const [users, setUsers] = React.useState<FileType[]>([]); // Add users state
     const { user } = useUser();
     const [loading, setLoading] = React.useState<boolean>(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState<FileType | null>(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [fileToDelete, setFileToDelete] = useState<FileType | null>(null);
+    const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+    const [fileDetails, setFileDetails] = useState<FileType | null>(null);
     const router = useRouter();
 
     const fileCache = React.useRef<FileType[]>([]);
@@ -113,7 +116,7 @@ const DashboardPage = () => {
         setLoading(true);
         try {
             const data = await getFilesList(user?.uid);
-            fileCache.current = data;
+            // fileCache.current = data;
             setFiles(data);
         } catch (error) {
             console.error('Error refreshing file list:', error);
@@ -171,9 +174,9 @@ const DashboardPage = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const users = files.map((file) => ({
-        ...file,
-    }));
+    useEffect(() => {
+        setUsers(files); // Update users state when files change
+    }, [files]);
 
     const pages = Math.ceil(users.length / rowsPerPage);
 
@@ -253,11 +256,18 @@ const DashboardPage = () => {
                 await deleteFileFromStorage(fileToDelete.path, fileToDelete.id);
                 setIsDeleteModalOpen(false);
                 setFileToDelete(null); // Clear the file to delete
-                await refreshFileList(); // Refresh the file list after deletion
+                setFiles((prevFiles) =>
+                    prevFiles.filter((file) => file.id !== fileToDelete.id)
+                ); // Remove the deleted file from the state
             } catch (error) {
                 console.error('Error deleting file:', error);
             }
         }
+    };
+
+    const handleDetailsClick = (file: FileType) => {
+        setFileDetails(file);
+        setIsDetailsModalOpen(true);
     };
 
     const renderCell = React.useCallback(
@@ -341,6 +351,11 @@ const DashboardPage = () => {
                                         Share
                                     </DropdownItem>
                                     <DropdownItem
+                                        onClick={() => handleDetailsClick(file)}
+                                    >
+                                        Details
+                                    </DropdownItem>
+                                    <DropdownItem
                                         onClick={() => handleDeleteClick(file)}
                                     >
                                         Delete
@@ -421,7 +436,7 @@ const DashboardPage = () => {
                             size="sm"
                             onClick={handleAddNewClick}
                         >
-                            Add New
+                            Add File
                         </Button>
                     </div>
                 </div>
@@ -584,6 +599,13 @@ const DashboardPage = () => {
                     onOpenChange={() => setIsDeleteModalOpen(false)}
                     fileName={fileToDelete.name}
                     onDeleteConfirm={handleDeleteConfirm}
+                />
+            )}
+            {fileDetails && (
+                <DetailsModal
+                    isOpen={isDetailsModalOpen}
+                    onOpenChange={() => setIsDetailsModalOpen(false)}
+                    file={fileDetails}
                 />
             )}
         </>

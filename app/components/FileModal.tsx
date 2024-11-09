@@ -11,9 +11,13 @@ import { Input } from '@nextui-org/input';
 import {
     saveFileDetails,
     deleteFileFromStorage,
+    formatFileSize,
+    formatDate,
 } from '@/config/firebaseConfig';
 import { toast } from 'react-toastify';
 import { CopyIcon, PlusIcon } from '@/components/icons';
+import { FileType } from '@/types';
+import { title } from '@/components/primitives';
 
 interface FileModalProps {
     isOpen: boolean;
@@ -177,4 +181,75 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
     );
 };
 
-export { FileModal, DeleteModal };
+interface DetailsModalProps {
+    isOpen: boolean;
+    onOpenChange: () => void;
+    file: FileType;
+}
+
+const DetailsModal: React.FC<DetailsModalProps> = ({
+    isOpen,
+    onOpenChange,
+    file,
+}) => {
+    return (
+        <Modal
+            isOpen={isOpen}
+            onOpenChange={onOpenChange}
+            placement="top-center"
+            className="w-full md:w-1/2 lg:w-1/3 mt-24"
+        >
+            <ModalContent>
+                {(onClose) => (
+                    <>
+                        <ModalHeader className="flex flex-col gap-1">
+                            <h4
+                                className={`font-bold text-large ${title({ size: 'xs', color: 'blue' })}`}
+                            >
+                                File Details
+                            </h4>
+                        </ModalHeader>
+                        <ModalBody>
+                            <div className="flex flex-col items-center justify-center gap-5 py-2 px-1">
+                                <Image
+                                    isZoomed
+                                    alt="File preview"
+                                    className="object-cover rounded-xl"
+                                    src={file.path}
+                                    width={270}
+                                />
+                            </div>
+                            <div className="flex flex-col items-start justify-center gap-5 py-2 px-8 text-left">
+                                <p className="line-clamp-1">
+                                    <strong>Name:</strong> {file.name}
+                                </p>
+                                <p>
+                                    <strong>Size:</strong>{' '}
+                                    {formatFileSize(file.size)}
+                                </p>
+                                <p>
+                                    <strong>Type:</strong> {file.contentType}
+                                </p>
+                                <p>
+                                    <strong>Created:</strong>{' '}
+                                    {formatDate(file.created)}
+                                </p>
+                                <p>
+                                    <strong>Modified:</strong>{' '}
+                                    {formatDate(file.modified)}
+                                </p>
+                            </div>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="default" onClick={onClose}>
+                                Close
+                            </Button>
+                        </ModalFooter>
+                    </>
+                )}
+            </ModalContent>
+        </Modal>
+    );
+};
+
+export { FileModal, DeleteModal, DetailsModal };
