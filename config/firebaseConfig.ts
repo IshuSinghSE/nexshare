@@ -162,6 +162,32 @@ export async function deleteFileFromStorage(filePath: string, fileId: string) {
     }
 }
 
+export async function renameFile(oldFilePath: string, newFilePath: string) {
+    const storage = getStorage();
+    const oldFileRef = ref(storage, oldFilePath);
+    const newFileRef = ref(storage, newFilePath);
+
+    try {
+        // Get the file's metadata
+        const metadata = await getMetadata(oldFileRef);
+        // Get the file's data
+        const fileData = await getDownloadURL(oldFileRef).then((url) =>
+            fetch(url).then((res) => res.blob())
+        );
+
+        // Upload the file to the new path
+        await uploadBytesResumable(newFileRef, fileData, metadata);
+
+        // Delete the old file
+        await deleteObject(oldFileRef);
+
+        toast.success('File renamed successfully!');
+    } catch (error) {
+        toast.error('Error renaming file');
+        console.error('Error renaming file:', error);
+    }
+}
+
 let fileListCache: Array<{
     id: string;
     name: string;

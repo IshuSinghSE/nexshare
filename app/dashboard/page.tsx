@@ -42,9 +42,10 @@ import {
 } from '@/config/firebaseConfig';
 import { useUser } from '@/context/UserContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import FileModal from '../components/FileModal';
+import { FileModal, DeleteModal } from '../components/FileModal';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from 'next/navigation';
 
 interface FileType {
     id: string;
@@ -64,11 +65,12 @@ const statusColorMap: Record<string, 'success' | 'danger' | 'warning'> = {
     vacation: 'warning',
 };
 
-const INITIAL_VISIBLE_COLUMNS = [
+const INITIAL_VISIBLE_COLUMNS_MOBILE = ['name', 'size', 'actions'];
+const INITIAL_VISIBLE_COLUMNS_DESKTOP = [
     'name',
     'size',
     'filetype',
-    'status',
+    'created',
     'actions',
 ];
 
@@ -78,7 +80,11 @@ const DashboardPage = () => {
         new Set([])
     );
     const [visibleColumns, setVisibleColumns] = React.useState<Set<string>>(
-        new Set(INITIAL_VISIBLE_COLUMNS)
+        new Set(
+            window.innerWidth < 768
+                ? INITIAL_VISIBLE_COLUMNS_MOBILE
+                : INITIAL_VISIBLE_COLUMNS_DESKTOP
+        )
     );
     const [statusFilter, setStatusFilter] = React.useState<
         string | Set<string>
@@ -97,16 +103,22 @@ const DashboardPage = () => {
     const [loading, setLoading] = React.useState<boolean>(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState<FileType | null>(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [fileToDelete, setFileToDelete] = useState<FileType | null>(null);
+    const router = useRouter();
 
     const fileCache = React.useRef<FileType[]>([]);
 
     const refreshFileList = async () => {
+        setLoading(true);
         try {
             const data = await getFilesList(user?.uid);
             fileCache.current = data;
             setFiles(data);
         } catch (error) {
             console.error('Error refreshing file list:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -142,7 +154,22 @@ const DashboardPage = () => {
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, [loading]);
+    }, [loading, loadMoreFiles]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setVisibleColumns(
+                new Set(
+                    window.innerWidth < 768
+                        ? INITIAL_VISIBLE_COLUMNS_MOBILE
+                        : INITIAL_VISIBLE_COLUMNS_DESKTOP
+                )
+            );
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const users = files.map((file) => ({
         ...file,
@@ -215,11 +242,18 @@ const DashboardPage = () => {
         }
     };
 
-    const handleDeleteClick = async (file: FileType) => {
-        if (confirm(`Are you sure you want to delete ${file.name}?`)) {
+    const handleDeleteClick = (file: FileType) => {
+        setFileToDelete(file);
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (fileToDelete) {
             try {
-                await deleteFileFromStorage(file.path, file.id);
-                refreshFileList();
+                await deleteFileFromStorage(fileToDelete.path, fileToDelete.id);
+                setIsDeleteModalOpen(false);
+                setFileToDelete(null); // Clear the file to delete
+                await refreshFileList(); // Refresh the file list after deletion
             } catch (error) {
                 console.error('Error deleting file:', error);
             }
@@ -301,7 +335,6 @@ const DashboardPage = () => {
                                     >
                                         View
                                     </DropdownItem>
-                                    {/* <DropdownItem>Edit</DropdownItem> */}
                                     <DropdownItem
                                         onClick={() => handleShareClick(file)}
                                     >
@@ -343,11 +376,12 @@ const DashboardPage = () => {
         }
     }, []);
 
-    const handleColumnSelectionChange = (keys: Set<string>) => {
-        if (!keys.has('name')) {
-            keys.add('name');
-        }
-        setVisibleColumns(keys);
+    const handlePageChange = (newPage: number) => {
+        setPage(newPage);
+    };
+
+    const handleAddNewClick = () => {
+        router.push('/upload');
     };
 
     const topContent = React.useMemo(() => {
@@ -361,7 +395,7 @@ const DashboardPage = () => {
                             base: 'w-full sm:max-w-[44%] bg-default-100',
                             inputWrapper: 'border-1',
                         }}
-                        placeholder="Search by name..."
+                        placeholder="Search by file name..."
                         size="sm"
                         startContent={
                             <SearchIcon className="text-default-300" />
@@ -377,85 +411,18 @@ const DashboardPage = () => {
                             size="sm"
                             variant="flat"
                             onClick={() => refreshFileList()}
+                            className={loading ? 'animate-spin' : ''}
                         >
                             <RefreshIcon size={20} />
                         </Button>
-
-                        <Dropdown>
-                            <DropdownTrigger className="hidden sm:flex">
-                                <Button
-                                    endContent={
-                                        <ChevronDownIcon className="text-small" />
-                                    }
-                                    size="sm"
-                                    variant="flat"
-                                >
-                                    Status
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                                disallowEmptySelection
-                                aria-label="Table Columns"
-                                closeOnSelect={false}
-                                selectedKeys={statusFilter}
-                                selectionMode="multiple"
-                                onSelectionChange={(keys) =>
-                                    setStatusFilter(keys as Set<string>)
-                                }
-                            >
-                                {statusOptions.map((status) => (
-                                    <DropdownItem
-                                        key={status.uid}
-                                        className="capitalize"
-                                    >
-                                        {capitalize(status.name)}
-                                    </DropdownItem>
-                                ))}
-                            </DropdownMenu>
-                        </Dropdown>
-                        <Dropdown>
-                            <DropdownTrigger className="hidden sm:flex">
-                                <Button
-                                    endContent={
-                                        <ChevronDownIcon className="text-small" />
-                                    }
-                                    size="sm"
-                                    variant="flat"
-                                >
-                                    Columns
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                                disallowEmptySelection
-                                aria-label="Table Columns"
-                                closeOnSelect={false}
-                                selectedKeys={visibleColumns}
-                                selectionMode="multiple"
-                                onSelectionChange={(keys) =>
-                                    handleColumnSelectionChange(
-                                        keys as Set<string>
-                                    )
-                                }
-                            >
-                                {columns.map((column) => (
-                                    <DropdownItem
-                                        key={column.uid}
-                                        className="capitalize"
-                                    >
-                                        {capitalize(column.name)}
-                                    </DropdownItem>
-                                ))}
-                            </DropdownMenu>
-                        </Dropdown>
-                        <Link href="/upload">
-                            <Button
-                                className="bg-foreground text-background"
-                                endContent={<PlusIcon />}
-                                size="sm"
-                            >
-                                Add New
-                            </Button>
-                        </Link>
+                        <Button
+                            className="bg-foreground text-background"
+                            endContent={<PlusIcon />}
+                            size="sm"
+                            onClick={handleAddNewClick}
+                        >
+                            Add New
+                        </Button>
                     </div>
                 </div>
                 <div className="flex justify-between items-center">
@@ -478,12 +445,11 @@ const DashboardPage = () => {
         );
     }, [
         filterValue,
-        statusFilter,
-        visibleColumns,
         onSearchChange,
         onRowsPerPageChange,
         users.length,
         hasSearchFilter,
+        loading, // Add loading to dependencies
     ]);
 
     const bottomContent = React.useMemo(() => {
@@ -495,11 +461,10 @@ const DashboardPage = () => {
                         cursor: 'bg-foreground text-background',
                     }}
                     color="default"
-                    isDisabled={hasSearchFilter}
                     page={page}
                     total={pages}
                     variant="light"
-                    onChange={setPage}
+                    onChange={handlePageChange}
                 />
                 <span className="text-small text-default-400">
                     {selectedKeys.size === items.length
@@ -611,6 +576,14 @@ const DashboardPage = () => {
                     fileType={selectedFile.contentType}
                     fileURL={selectedFile.path}
                     sharedBy={user?.displayName || 'Unknown'}
+                />
+            )}
+            {fileToDelete && (
+                <DeleteModal
+                    isOpen={isDeleteModalOpen}
+                    onOpenChange={() => setIsDeleteModalOpen(false)}
+                    fileName={fileToDelete.name}
+                    onDeleteConfirm={handleDeleteConfirm}
                 />
             )}
         </>

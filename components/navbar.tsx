@@ -27,9 +27,12 @@ import {
 import ProfileMenu from './ProfileMenu';
 import { title } from './primitives';
 import { useUser } from '@/context/UserContext';
+import { usePathname } from 'next/navigation';
+import LogoutButton from './LogoutButton';
 
 export const Navbar = () => {
     const { user } = useUser();
+    const pathname = usePathname();
 
     const searchInput = (
         <Input
@@ -73,7 +76,7 @@ export const Navbar = () => {
                         </p>
                     </NextLink>
                 </NavbarBrand>
-                <ul className="hidden lg:flex gap-4 justify-start ml-2">
+                <ul className="hidden  md:flex gap-4 justify-start ml-2">
                     {siteConfig.navItems
                         .filter((item) => !item.protected || user)
                         .map((item) => (
@@ -123,23 +126,6 @@ export const Navbar = () => {
 
                     <ProfileMenu />
                 </NavbarItem>
-                {/* <NavbarItem className="hidden lg:flex">
-                    {searchInput}
-                </NavbarItem> */}
-                {/* <NavbarItem className="hidden md:flex">
-                    <Button
-                        isExternal
-                        as={Link}
-                        className="text-sm font-normal text-default-600 bg-default-100"
-                        href={siteConfig.links.sponsor}
-                        startContent={
-                            <HeartFilledIcon className="text-danger" />
-                        }
-                        variant="flat"
-                    >
-                        Sponsor
-                    </Button>
-                </NavbarItem> */}
             </NavbarContent>
 
             <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
@@ -157,19 +143,25 @@ export const Navbar = () => {
             <NavbarMenu>
                 {searchInput}
                 <div className="mx-4 mt-2 flex flex-col gap-2">
+                    {!user && (
+                        <Link
+                            href="/sign-in"
+                            color="foreground"
+                            size="lg"
+                            className="w-full"
+                        >
+                            Get Started
+                        </Link>
+                    )}
                     {siteConfig.navMenuItems
                         .filter((item) => !item.protected || user)
                         .map((item, index) => (
                             <NavbarMenuItem key={`${item}-${index}`}>
                                 <Link
                                     color={
-                                        index === 2
+                                        pathname === item.href
                                             ? 'primary'
-                                            : index ===
-                                                siteConfig.navMenuItems.length -
-                                                    1
-                                              ? 'danger'
-                                              : 'foreground'
+                                            : 'foreground'
                                     }
                                     href={item.href}
                                     size="lg"
@@ -178,6 +170,19 @@ export const Navbar = () => {
                                 </Link>
                             </NavbarMenuItem>
                         ))}
+
+                    {user ? (
+                        <LogoutButton />
+                    ) : (
+                        <Link
+                            href="/sign-in"
+                            color="primary"
+                            size="lg"
+                            className="w-full"
+                        >
+                            Sign In
+                        </Link>
+                    )}
                 </div>
             </NavbarMenu>
         </NextUINavbar>

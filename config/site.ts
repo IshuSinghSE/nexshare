@@ -1,9 +1,8 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-    name: 'Next.js + NextUI',
-    description:
-        'Make beautiful websites regardless of your design experience.',
+    name: 'NexShare',
+    description: 'Making file sharing easy, secure, and efficient.',
     navItems: [
         {
             label: 'Dashboard',
@@ -13,11 +12,6 @@ export const siteConfig = {
         {
             label: 'Upload',
             href: '/upload',
-            protected: true,
-        },
-        {
-            label: 'Preview',
-            href: '/preview',
             protected: true,
         },
         {
@@ -53,9 +47,9 @@ export const siteConfig = {
             protected: false,
         },
         {
-            label: 'Logout',
-            href: '/logout',
-            protected: true,
+            label: 'About',
+            href: '/about',
+            protected: false,
         },
     ],
     links: {
@@ -63,6 +57,6 @@ export const siteConfig = {
         twitter: 'https://twitter.com/wth_ishu',
         docs: 'https://nextui.org',
         discord: 'https://discordapp.com/users/974990873634943016',
-        sponsor: 'https://patreon.com/jrgarciadev',
+        // sponsor: 'https://patreon.com/jrgarciadev',
     },
 };

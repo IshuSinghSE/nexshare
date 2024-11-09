@@ -8,8 +8,12 @@ import {
 import { Image } from '@nextui-org/image';
 import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
-import { saveFileDetails } from '@/config/firebaseConfig';
+import {
+    saveFileDetails,
+    deleteFileFromStorage,
+} from '@/config/firebaseConfig';
 import { toast } from 'react-toastify';
+import { CopyIcon, PlusIcon } from '@/components/icons';
 
 interface FileModalProps {
     isOpen: boolean;
@@ -53,6 +57,7 @@ const FileModal: React.FC<FileModalProps> = ({
             isOpen={isOpen}
             onOpenChange={onOpenChange}
             placement="top-center"
+            className="w-full md:w-1/2 lg:w-1/3 mt-24"
         >
             <ModalContent>
                 {(onClose) => (
@@ -97,11 +102,12 @@ const FileModal: React.FC<FileModalProps> = ({
                                             className="w-full"
                                         />
                                         <Button
+                                            isIconOnly
                                             color="primary"
                                             variant="ghost"
                                             onClick={handleCopyLink}
                                         >
-                                            Copy Link
+                                            <CopyIcon />
                                         </Button>
                                     </div>
                                 </div>
@@ -115,4 +121,60 @@ const FileModal: React.FC<FileModalProps> = ({
     );
 };
 
-export default FileModal;
+interface DeleteModalProps {
+    isOpen: boolean;
+    onOpenChange: () => void;
+    fileName: string;
+    onDeleteConfirm: () => void;
+}
+
+const DeleteModal: React.FC<DeleteModalProps> = ({
+    isOpen,
+    onOpenChange,
+    fileName,
+    onDeleteConfirm,
+}) => {
+    return (
+        <Modal
+            isOpen={isOpen}
+            onOpenChange={onOpenChange}
+            placement="top-center"
+            className="w-full md:w-1/2 lg:w-1/3 mt-24"
+        >
+            <ModalContent>
+                {(onClose) => (
+                    <>
+                        <ModalHeader className="flex flex-col gap-1">
+                            <h4 className="font-bold text-large">
+                                Delete File
+                            </h4>
+                        </ModalHeader>
+                        <ModalBody>
+                            <div className="flex flex-col items-center justify-center gap-5 py-2 px-1">
+                                <p>
+                                    Are you sure you want to delete {fileName}?
+                                </p>
+                            </div>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button
+                                color="danger"
+                                onClick={() => {
+                                    onDeleteConfirm();
+                                    onClose();
+                                }}
+                            >
+                                Delete
+                            </Button>
+                            <Button color="default" onClick={onClose}>
+                                Cancel
+                            </Button>
+                        </ModalFooter>
+                    </>
+                )}
+            </ModalContent>
+        </Modal>
+    );
+};
+
+export { FileModal, DeleteModal };

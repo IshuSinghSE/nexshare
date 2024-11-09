@@ -1,53 +1,44 @@
-# Next.js & NextUI Template
+# Welcome to NexShare
 
-This is a template for creating applications using Next.js 14 (app directory) and NextUI (v2).
+NexShare is your go-to solution for easy and secure file sharing.
+Whether you need to upload important documents, share memories with friends, or manage your files,
+NexShare makes it simple and efficient. [Demo](https://nexshare.vercel.app/)
+<br>
 
-[Try it on CodeSandbox](https://githubbox.com/nextui-org/next-app-template)
+![image](https://github.com/user-attachments/assets/606d7a7a-c00e-478d-818e-c0010b3f629d)
 
-## Technologies Used
+![image](https://github.com/user-attachments/assets/848d6271-1d7e-4367-98d9-a64c1c9b3e9d)
 
-- [Next.js 14](https://nextjs.org/docs/getting-started)
-- [NextUI v2](https://nextui.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Tailwind Variants](https://tailwind-variants.org)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [next-themes](https://github.com/pacocoursey/next-themes)
+![image](https://github.com/user-attachments/assets/385c1c66-a36d-432c-97db-77ec51baf69a)
 
-## How to Use
+![image](https://github.com/user-attachments/assets/5f449dad-8f86-4bcd-80f4-faf55eaa872c)
 
-### Use the template with create-next-app
+## Tech Stack
 
-To create a new project based on this template using `create-next-app`, run the following command:
+- **Backend** : Firebase (Authentication, Storage, Database )
+- **Frontend** : NextJS, ReactJS, NextUI (ui library)
 
-```bash
-npx create-next-app -e https://github.com/nextui-org/next-app-template
-```
+## Key Features
 
-### Install dependencies
+- **Effortless File Upload**: Upload your files with a simple drag-and-drop interface.
+- **Easy Sharing**: Generate shareable links to quickly share your files with others.
+- **Manage Your Files**: View, organize, and delete your files with ease.
+- **Secure Access**: Enjoy peace of mind with secure user authentication.
+- **Real-time Updates**: Instantly see changes with real-time updates on uploads, deletions
+- **Search Functionality**: Easily find your files with our powerful search feature.
+- **Responsive Design**: Access NexShare from any device, anywhere.
 
-You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
+## Get Started
 
-```bash
-npm install
-```
+1. **Sign Up**: Create your free account.
+2. **Upload Files**: Easily upload your files from your computer or mobile device.
+3. **Share Links**: Generate and share links to your files.
+4. **Manage Files**: Organize your files in a way that suits you.
 
-### Run the development server
+## Contact Us
 
-```bash
-npm run dev
-```
+Have questions or need help? Reach out to our support team at [Support](mailto:ishuu.singh13@gmail.com).
 
-### Setup pnpm (optional)
+---
 
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
-
-```bash
-public-hoist-pattern[]=*@nextui-org/*
-```
-
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
-
-## License
-
-Licensed under the [MIT license](https://github.com/nextui-org/next-app-template/blob/main/LICENSE).
+NexShare - Making file sharing easy, secure, and efficient.

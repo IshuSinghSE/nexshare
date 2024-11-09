@@ -22,7 +22,7 @@ import { ToastContainer, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useUser } from '@/context/UserContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import FileModal from '@/app/components/FileModal';
+import { FileModal } from '@/app/components/FileModal';
 import { useDisclosure } from '@nextui-org/modal';
 import { extractFilePath } from '@/config/utils';
 import { FileType } from '@/types';

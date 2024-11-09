@@ -15,8 +15,7 @@ import LogoutButton from './LogoutButton';
 
 const ProfileMenu = () => {
     const { user } = useUser();
-    const avatarSrc = user?.photoURL || '/path/to/default/avatar.png'; // Add a fallback image
-    console.log(user);
+    const avatarSrc = user?.photoURL || '/default-avatar.jpg'; // Add a fallback image
     return (
         <>
             {user ? (
@@ -29,7 +28,7 @@ const ProfileMenu = () => {
                     }}
                 >
                     <DropdownTrigger>
-                        {user.photoURL ? (
+                        {user?.photoURL ? (
                             <Avatar
                                 isBordered
                                 color="primary"
@@ -66,7 +65,7 @@ const ProfileMenu = () => {
                             <Link href="/settings">Settings</Link>
                         </DropdownItem>
                         <DropdownItem key="help_and_feedback">
-                            <Link href="/help">Help & Feedback</Link>
+                            <Link href="/contact">Help & Feedback</Link>
                         </DropdownItem>
                         <DropdownItem key="logout" color="danger">
                             <LogoutButton />
